@@ -1,0 +1,6 @@
+nested_lookup
+loguru
+scrapfly-sdk[all]
+boto3
+parsel
+lxml
