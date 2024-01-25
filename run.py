@@ -15,7 +15,14 @@ table = dynamodb.Table(table_name)
 async def run(event, context):
     # enable scrapfly cache for basic use
     stockx.BASE_CONFIG["cache"] = True
-    url_keys = await stockx.scrape_search("https://stockx.com/search/sneakers/", max_pages=1)
+    # Scrape the sneakers page
+    url_keys_sneakers = await stockx.scrape_search("https://stockx.com/search/sneakers/", max_pages=10)
+
+    # Scrape the apparel page
+    url_keys_apparel = await stockx.scrape_search("https://stockx.com/search/apparel/", max_pages=10)    
+
+    url_keys = url_keys_sneakers + url_keys_apparel
+
     
     for key in url_keys:
         product_url = f"https://stockx.com/{key}"
@@ -35,15 +42,6 @@ def convert_floats(data):
         return data
 
 def lambda_handler(event, context):
-    # Insert a test item
-    test_item = {
-        'id': 'test',
-        'data': 'This is a test item'
-    }
-
-    print("Putting item...")
-    response = table.put_item(Item=test_item)
-    print("Put item response:", response)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run(event, context))
     loop.close()

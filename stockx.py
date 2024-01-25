@@ -12,7 +12,6 @@ BASE_CONFIG = {
     "asp": True,
 }
 
-
 def parse_nextjs(result: ScrapeApiResponse) -> Dict:
     """parse a next.js page for its data"""
     if result.selector.type == "html":
@@ -43,6 +42,7 @@ async def scrape_product(url: str) -> Dict:
     market = nested_lookup("market", market_data)[0]
 
     extracted_product = {
+        **product,
         "urlKey": product.get("urlKey"),
         "market": {
             "skuUuid": market.get("skuUuid"),
@@ -89,7 +89,7 @@ async def scrape_product(url: str) -> Dict:
     }
     return extracted_product
 
-async def scrape_search(url: str, max_pages: int = 1) -> List[str]:
+async def scrape_search(url: str, max_pages: int = 20) -> List[str]:
     """Scrape StockX search"""
     log.info("scraping search {}", url)
     first_page = await SCRAPFLY.async_scrape(ScrapeConfig(url, **BASE_CONFIG))
@@ -106,13 +106,19 @@ async def scrape_search(url: str, max_pages: int = 1) -> List[str]:
     # then scrape other pages concurrently:
     log.info("scraping search {} pagination ({} more pages)", url, total_pages - 1)
     _other_pages = [
-        ScrapeConfig(f"{first_page.context['url']}&page={page}", **BASE_CONFIG) 
-        for page in range(2, total_pages + 1)
+    ScrapeConfig(f"{first_page.context['url']}?page={page}", **BASE_CONFIG) 
+    for page in range(2, total_pages + 1)
     ]
+
     async for result in SCRAPFLY.concurrent_scrape(_other_pages):
-        data = parse_nextjs(result)
-        _page_results = nested_lookup("results", data)[0]
-        product_previews.extend([edge["node"] for edge in _page_results["edges"]])
-    url_keys = [product["urlKey"] for product in product_previews]
+        if result.error:
+            log.error("Failed to scrape page: {}", result.error)
+        else:
+            data = parse_nextjs(result)
+            _page_results = nested_lookup("results", data)[0]
+            product_previews.extend([edge["node"] for edge in _page_results["edges"]])
+            log.info("Successfully scraped page: {}", result)  # print the whole result object
+    
+    url_keys = list(set([product["urlKey"] for product in product_previews]))  # use a set to remove duplicates
     log.info("extracted {} urlKeys from {}", len(url_keys), url)
     return url_keys
