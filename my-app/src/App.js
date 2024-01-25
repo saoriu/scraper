@@ -35,6 +35,20 @@ function App() {
       });
   }, []);
 
+    // New useEffect hook to fetch all items when the component mounts
+    useEffect(() => {
+      setLoading(true);
+      axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/item')
+        .then(response => {
+          setItems(response.data);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Error fetching items: ', error);
+          setLoading(false);
+        });
+    }, []);
+
   const handleBrandSelect = (brand) => {
     setLoading(true);
     setItems([]); // Clear existing items when a new brand is selected
