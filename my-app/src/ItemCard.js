@@ -214,12 +214,16 @@ function ItemCard({ item, sortBy }) {
                             height="140"
                             image={item.media && item.media.thumbUrl}
                             title={item.model}
+                            style={{paddingBottom: '10px' }}
                         />
                         <CardContent>
                             <Grid container direction="column" justifyContent="space-between" alignItems="stretch">
                                 <Grid item className={classes.textContainer}>
+                                    <Typography variant="body2" component="p">
+                                        {item.brand}
+                                    </Typography>
                                     <Typography variant="h5" component="h2" className={classes.truncate}>
-                                        {item.model}
+                                        {item.brand.toLowerCase() === 'jordan' ? item.model.replace(item.brand, 'Air Jordan') : item.model.replace(item.brand, '')}
                                     </Typography>
                                     <Typography variant="body1" component="p">
                                         {item.secondaryTitle}

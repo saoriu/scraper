@@ -123,6 +123,7 @@ function App() {
   
   const flipSortDirection = () => {
     setSortDirection(prevDirection => prevDirection === 'asc' ? 'desc' : 'asc');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
   useEffect(() => {
@@ -182,6 +183,7 @@ function App() {
     );
     setItems(sortItems(filteredItems, sortBy)); // Pass sortBy to sortItems
     setLoading(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -212,7 +214,7 @@ function App() {
       <div className={`${classes.footer} footer`}>
         <img src="/logo.png" alt="Logo" className={classes.logo} />
         <a href='https://saoriuchida.com' className={classes.saori} target='_blank' rel='noopener noreferrer'>
-          <span className={classes.hiddenText}>Scrapeit by Saori Uchida</span>
+          <span className={classes.hiddenText}>Scrape Sight by Saori Uchida</span>
         </a>
       </div>
     </div>

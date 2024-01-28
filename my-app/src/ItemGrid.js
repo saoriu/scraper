@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ItemGrid({ items, sortBy }) {
     const classes = useStyles();
-    const [count, setCount] = useState(30); // Start with first 7 items
+    const [count, setCount] = useState(36); // Start with first 36 items
 
     const fetchMoreData = () => {
         // a fake async api call like which sends

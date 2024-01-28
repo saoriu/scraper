@@ -187,7 +187,7 @@ function BrandSelector({ brands, onBrandSelect, onSort, flipSortDirection, sortD
                     <MenuItem value="" disabled>
                         Sort By
                     </MenuItem>
-                    <MenuItem value={'changeValue'}>Change</MenuItem>
+                    <MenuItem value={'changeValue'}>Price Change</MenuItem>
                     <MenuItem value={'deadstockSold'}>Units Sold</MenuItem>
                     <MenuItem value={'totalDollars'}>Total Dollars</MenuItem>
                     <MenuItem value={'averageDeadstockPrice'}>Average Price</MenuItem>
