@@ -5,6 +5,8 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { ReactComponent as SortUp } from './sort-up.svg';
 import { ReactComponent as SortDown } from './sort-down.svg';
+import { ReactComponent as Search } from './search.svg';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
     select: {
@@ -25,6 +27,40 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: 'white', // Change color on hover
         },
     },
+    searchButton: {
+        '&:hover': {
+            backgroundColor: 'transparent', // Change this to the color you want
+            // Add any other styles you want to remove or change on hover
+        },
+        '&:focus': {
+            outline: 'none', // Remove the focus indicator
+            backgroundColor: 'transparent', // Change this to the color you want
+
+        },
+        '&:active': {
+            outline: 'none',
+            boxShadow: 'none', // Remove the box shadow
+            backgroundColor: 'transparent', // Change this to the color you want
+        },
+        //remove material ui styling for pressing
+        boxShadow: 'none',
+        backgroundColor: 'transparent',
+        padding: '0px',
+        margin: '0px',
+        minWidth: '30px',
+
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderLeft: '1px solid black',
+        justifyContent: 'center',
+        margin: '0px',
+        top: '100px',
+        backgroundColor: '#d8d8d8',
+        left: '20px',
+    },
     button: {
         backgroundColor: 'white', // Make the button black
         color: 'black', // Make the text color white
@@ -41,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 2, // Adjust the border radius as needed
         '&:hover': {
             boxShadow: 'none', // Remove the box shadow
-backgroundColor: 'white', // Change color on hover
+            backgroundColor: 'white', // Change color on hover
         },
     },
     buttonSort: {
@@ -62,6 +98,21 @@ backgroundColor: 'white', // Change color on hover
         '&:hover': {
             backgroundColor: 'white', // Change color on hover
             boxShadow: 'none', // Remove the box shadow
+        },
+    },
+    textField: {
+        backgroundColor: '#d8d8d8',
+        color: 'black',
+        fontSize: '0.8em',
+        fontWeight: '500',
+        height: '30px',
+        width: '125px',
+        padding: '2px 10px',
+        margin: '0px',
+        whiteSpace: 'nowrap',
+        borderRadius: 2,
+        '&:hover': {
+            backgroundColor: '#d8d8d8',
         },
     },
     buttonViewAll: {
@@ -85,13 +136,14 @@ backgroundColor: 'white', // Change color on hover
     },
 }));
 
-function BrandSelector({ brands, onBrandSelect, onSort, flipSortDirection, sortDirection, setSortBy, sortBy = 'changeValue', onViewAll }) {
+function BrandSelector({ brands, onBrandSelect, onSort, flipSortDirection, sortDirection, setSortBy, sortBy = 'changeValue', onViewAll, searchQuery, onSearch, setSearchQuery }) {
     const classes = useStyles();
     const [selectedOption, setSelectedOption] = useState(sortBy);
 
     useEffect(() => {
         setSelectedOption(sortBy);
     }, [sortBy]);
+
 
     return (
         <div className='main'>
@@ -129,6 +181,7 @@ function BrandSelector({ brands, onBrandSelect, onSort, flipSortDirection, sortD
                     View All
                 </Button>
             </div>
+            <div className='menu'>
             {brands.map((brand, index) => (
                 <Button
                     variant="contained"
@@ -136,12 +189,25 @@ function BrandSelector({ brands, onBrandSelect, onSort, flipSortDirection, sortD
                     onClick={() => onBrandSelect(brand)}
                     key={brand}
                     style={{
-                        marginRight: index === brands.length - 1 ? '40px' : '0',
-                        marginLeft: index === 0 ? '5px' : '0' // Add this line
+                        marginRight: index === brands.length - 1 ? '20px' : '0',
+                        marginLeft: index === 0 ? '20px' : '0' // Add this line
                     }}                >
                     {brand}
                 </Button>
             ))}
+            </div>
+                        <div className='filters'>
+            <form className={classes.form} onSubmit={onSearch}>
+                <TextField
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    placeholder="Search"
+                    className={classes.textField}
+                />
+                <Button type="submit" className={classes.searchButton} disableRipple><Search /></Button>
+            </form>
+            </div>
         </div>
     );
 }

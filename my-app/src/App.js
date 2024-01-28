@@ -49,12 +49,15 @@ function App() {
   const [loadingBrands, setLoadingBrands] = useState(true);
   const [selectedBrand, setSelectedBrand] = useState(''); // Add this line
   const [sortDirection, setSortDirection] = useState('asc');
+  const [searchQuery, setSearchQuery] = useState('');
+
+
   
 
   useEffect(() => {
     axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/brands')
       .then(response => {
-        const sortedBrands = response.data.sort(); // Sort the brands
+        const sortedBrands = response.data.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())); // Sort the brands case-insensitively
         setBrands(sortedBrands);
         setLoadingBrands(false);
       })
@@ -78,16 +81,21 @@ function App() {
 
   const handleSort = () => {
     setLoading(true);
-    const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
-    let filteredItems = allItems;
+    let allItems = JSON.parse(sessionStorage.getItem('items')) || [];
+    if (searchQuery) {
+      allItems = allItems.filter(item => 
+        item.model.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        item.secondaryTitle.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
     if (selectedBrand) {
-      filteredItems = allItems.filter(item => item.brand === selectedBrand);
+      allItems = allItems.filter(item => item.brand === selectedBrand);
     }
     let sortedItems;
     if (sortDirection === 'desc') {
-      sortedItems = filteredItems.sort((a, b) => a.market[sortBy] - b.market[sortBy]);
+      sortedItems = allItems.sort((a, b) => a.market[sortBy] - b.market[sortBy]);
     } else {
-      sortedItems = filteredItems.sort((a, b) => b.market[sortBy] - a.market[sortBy]);
+      sortedItems = allItems.sort((a, b) => b.market[sortBy] - a.market[sortBy]);
     }
     setItems(sortedItems);
     setLoading(false);
@@ -144,6 +152,19 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const onSearch = (event) => {
+    event.preventDefault();
+    setLoading(true);
+    const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
+    const filteredItems = allItems.filter(item => 
+      item.model.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      item.secondaryTitle.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setItems(sortItems(filteredItems, sortBy)); // Pass sortBy to sortItems
+    setLoading(false);
+  };
+  
+
   return (
     <div className='App'>
 
@@ -152,8 +173,19 @@ function App() {
           : (
       <div className='content'>
             <div className={classes.line}></div>
-        <BrandSelector brands={brands} onBrandSelect={handleBrandSelect} setSortBy={setSortBy} onViewAll={handleViewAll} onSort={handleSort} flipSortDirection={flipSortDirection} sortDirection={sortDirection}/>
-                {loading 
+        <BrandSelector 
+          brands={brands} 
+          onBrandSelect={handleBrandSelect} 
+          setSortBy={setSortBy} 
+          onViewAll={handleViewAll} 
+          onSort={handleSort} 
+          flipSortDirection={flipSortDirection} 
+          sortDirection={sortDirection}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onSearch={onSearch}
+        />                
+        {loading 
           ? <div className={classes.loader}><GridLoader size={30} /></div> 
           : <ItemGrid items={items} sortBy={sortBy} />}
       </div>
