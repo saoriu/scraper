@@ -4,20 +4,32 @@
 
 .main {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: sticky;
+  flex-direction: row;
+  justify-content: flex-start; /* Updated this line */
+  position: fixed;
   top: 0;
-  width: 180px;
+  width: 100%;
+  overflow-x: scroll;
+  scrollbar-width: none; /* For Firefox */
+  z-index: 1;
+  gap: 15px;
+}
 
+body {
+overflow-x: hidden;
+}
+
+.main::-webkit-scrollbar {
+  display: none;
 }
 
 .App {
-  padding: 20px;
+  padding: 0 20px;
 }
 
 .content {
   display: flex;
+  flex-direction: column;
 }
 
 .BrandSelector {
@@ -30,9 +42,6 @@
   /* Other styles */
 }
 
-.MuiButtonBase-root {
-  padding: 25px !important;
-}
 
 .App-logo {
   height: 40vmin;

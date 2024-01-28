@@ -14,6 +14,15 @@ const useStyles = makeStyles((theme) => ({
     width: '100vw', // Adjust as needed
     height: '100vh', // Adjust as needed
   },
+  line: {
+    width: '100vw',
+    position: 'fixed',
+    left: '0px',
+    height: '74px',
+    backgroundColor: 'white',
+    borderBottom: '1px solid black',
+    zIndex: 1,
+  },
 }));
 
 function App() {
@@ -26,7 +35,8 @@ function App() {
   useEffect(() => {
     axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/brands')
       .then(response => {
-        setBrands(response.data);
+        const sortedBrands = response.data.sort(); // Sort the brands
+        setBrands(sortedBrands);
         setLoadingBrands(false);
       })
       .catch(error => {
@@ -78,12 +88,14 @@ function App() {
 
   return (
     <div className='App'>
+
             {loadingBrands 
           ? <div className={classes.loader}><GridLoader size={30} /></div> 
           : (
       <div className='content'>
+            <div className={classes.line}></div> {/* Add this line */}
         <BrandSelector brands={brands} onBrandSelect={handleBrandSelect} />
-        {loading 
+                {loading 
           ? <div className={classes.loader}><GridLoader size={30} /></div> 
           : <ItemGrid items={items} />}
       </div>
