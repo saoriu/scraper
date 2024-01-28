@@ -39,18 +39,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function BrandSelector({ brands, onBrandSelect }) {
+function BrandSelector({ brands, onBrandSelect, onViewAll }) {
     const classes = useStyles();
 
     return (
             <div className='main'>
             <Button 
-          variant="contained" 
-          className={classes.buttonViewAll}
-          onClick={() => onBrandSelect('')} // Call onBrandSelect with an empty string when "View All" is clicked
-        >
-          View All
-        </Button>
+                variant="contained" 
+                className={classes.buttonViewAll}
+                onClick={onViewAll} // Call onViewAll when "View All" is clicked
+            >
+                View All
+            </Button>
         {brands.map((brand, index) => (
   <Button 
     variant="contained" 

@@ -8,6 +8,7 @@ import { Chip } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 
+
 const theme = createTheme({
     typography: {
         fontFamily: '"Poppins", sans-serif',
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
     },
     head: {
         fontSize: '0.8rem',
-        color: '#f50057',
+        color: 'black',
         fontWeight: 'bold',
     },
     value: {
@@ -44,7 +45,7 @@ const useStyles = makeStyles({
     },
     head1: {
         fontSize: '1.3rem',
-        color: '#f50057',
+        color: 'black',
         fontWeight: 'bold',
     },
     value1: {
@@ -114,6 +115,7 @@ const useStyles = makeStyles({
         backfaceVisibility: 'hidden',
         position: 'absolute',
         top: 0,
+        padding: '20px',
         height: '375px',
         left: 0,
     },
@@ -122,6 +124,7 @@ const useStyles = makeStyles({
         backfaceVisibility: 'hidden',
         position: 'absolute',
         height: '375px',
+        padding: '20px',
         top: 0,
         left: 0,
     },
@@ -166,7 +169,7 @@ function ItemCard({ item }) {
                 <div className={`${classes.flipContainer} ${isFlipped ? classes.flipped : ''}`}>
                     <CardActionArea className={classes.front}>
                         <Chip
-                            label={`$${Math.abs(Math.round(Number(item.market.changeValue)))}`} 
+                            label={`${item.market.changeValue < 0 ? '-' : '+'}$${Math.abs(Math.round(Number(item.market.changeValue)))}`} 
                             className={`${classes.chipTopRight} ${item.market.changeValue < 0 ? classes.chipRed : classes.chipGreen}`}
                         />
                         <CardMedia

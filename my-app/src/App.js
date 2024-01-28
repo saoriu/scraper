@@ -68,9 +68,15 @@ function App() {
   const handleBrandSelect = (brand) => {
     setLoading(true);
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
-    console.log(allItems); // Add this line
     const filteredItems = allItems.filter(item => item.brand === brand);
     setItems(filteredItems);
+    setLoading(false);
+  };
+
+  const handleViewAll = () => {
+    setLoading(true);
+    const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
+    setItems(allItems);
     setLoading(false);
   };
 
@@ -81,13 +87,18 @@ function App() {
           ? <div className={classes.loader}><GridLoader size={30} /></div> 
           : (
       <div className='content'>
-            <div className={classes.line}></div> {/* Add this line */}
-        <BrandSelector brands={brands} onBrandSelect={handleBrandSelect} />
+            <div className={classes.line}></div>
+        <BrandSelector brands={brands} onBrandSelect={handleBrandSelect} onViewAll={handleViewAll} />
                 {loading 
           ? <div className={classes.loader}><GridLoader size={30} /></div> 
           : <ItemGrid items={items} />}
       </div>
       )}
+       <div className='footer'>
+    <a href='https://saoriuchida.com' target='_blank' rel='noopener noreferrer'>
+      by Saori Uchida
+    </a>
+  </div>
     </div>
   );
 }

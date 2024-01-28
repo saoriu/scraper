@@ -15,6 +15,40 @@
   gap: 15px;
 }
 
+.item-enter {
+  opacity: 0;
+}
+
+.item-enter-active {
+  opacity: 1;
+  transition: opacity 500ms;
+}
+
+.item-exit {
+  opacity: 1;
+}
+
+.item-exit-active {
+  opacity: 0;
+  transition: opacity 500ms;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: black;
+  text-align: right;
+  padding: 10px 0;
+}
+
+.footer a {
+  color: black;
+  font-family: 'Poppins', sans-serif;
+  text-decoration: none;
+}
+
 body {
 overflow-x: hidden;
 }
