@@ -14,16 +14,35 @@ const useStyles = makeStyles((theme) => ({
     width: '100vw', // Adjust as needed
     height: '100vh', // Adjust as needed
   },
-  
+    hiddenText: {
+      opacity: 0,
+      transform: 'translateX(-100%)', // Start from the left
+      transition: 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
+      whiteSpace: 'nowrap', // Add this line
+    },
+    footer: {
+      width: '30px', // Initial width
+      height: '30px', // Initial height
+      transition: 'width 0.5s ease-in-out',
+      overflow: 'hidden', // Add this line
+      '&:hover': {
+        width: '200px', // Width on hover
+      },
+      '&:hover $hiddenText': {
+        opacity: 1,
+        transform: 'translateX(0)', // End at the original position
+      },
+    },
+  logo: {
+    width: '30px',
+    height: '30px',
+    marginRight: '10px',
+  },
   saori: {
     color: 'black',
-    backgroundColor: 'white',
-    backgroundBlendMode: 'screen',  
     zIndex: 5,
     bottom: '0px',
-    border: '1px solid black',
     textDecoration: 'none',
-    padding: '10px 20px',
     '&:hover': {
       color: 'black',
       textDecoration: 'none',
@@ -158,12 +177,12 @@ function App() {
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
     const filteredItems = allItems.filter(item => 
       item.model.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      item.secondaryTitle.toLowerCase().includes(searchQuery.toLowerCase())
+      item.secondaryTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.brand.toLowerCase().includes(searchQuery.toLowerCase()) // Include brand in search criteria
     );
     setItems(sortItems(filteredItems, sortBy)); // Pass sortBy to sortItems
     setLoading(false);
   };
-  
 
   return (
     <div className='App'>
@@ -190,11 +209,12 @@ function App() {
           : <ItemGrid items={items} sortBy={sortBy} />}
       </div>
       )}
-       <div className='footer'>
-    <a href='' className={classes.saori} target='_blank' rel='noopener noreferrer'>
-      Uchida
-    </a>
-  </div>
+      <div className={`${classes.footer} footer`}>
+        <img src="/logo.png" alt="Logo" className={classes.logo} />
+        <a href='https://saoriuchida.com' className={classes.saori} target='_blank' rel='noopener noreferrer'>
+          <span className={classes.hiddenText}>Scrapeit by Saori Uchida</span>
+        </a>
+      </div>
     </div>
   );
 }

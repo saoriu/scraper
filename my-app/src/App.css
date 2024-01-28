@@ -72,14 +72,18 @@
 
 .footer {
   position: fixed;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  border: 1px solid black;
   right: 25px;
   bottom: 20px;
-  width: 100%;
   color: black;
   z-index: 5;
+  height: auto;
   font-size: 0.8em;
   text-align: right;
-  padding: 10px 0;
+  padding: 10px;
 }
 
 .footer a {

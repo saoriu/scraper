@@ -8,6 +8,7 @@ import { ReactComponent as SortDown } from './sort-down.svg';
 import { ReactComponent as Search } from './search.svg';
 import TextField from '@material-ui/core/TextField';
 
+
 const useStyles = makeStyles((theme) => ({
     select: {
         backgroundColor: 'white', // Make the select background white
@@ -144,7 +145,33 @@ function BrandSelector({ brands, onBrandSelect, onSort, flipSortDirection, sortD
         setSelectedOption(sortBy);
     }, [sortBy]);
 
+    useEffect(() => {
+        const menu = document.querySelector('.menu');
 
+        const handleScroll = (e) => {
+            if (e.deltaX !== 0) {
+                e.preventDefault();
+
+                // Check if the event target is the menu or a child of the menu
+                if (menu.contains(e.target)) {
+                    // Allow normal scrolling
+                    menu.scrollLeft += e.deltaX;
+                } else {
+                    // Check if the absolute value of e.deltaX is greater than or equal to 5
+                    if (Math.abs(e.deltaX) >= 10) {
+                        // Slow down scrolling
+                        menu.scrollLeft += e.deltaX / 1;
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('wheel', handleScroll, { passive: false });
+
+        return () => {
+            window.removeEventListener('wheel', handleScroll);
+        };
+    }, [brands]); // Add brands as a dependency
     return (
         <div className='main'>
             <div className='filters'>
