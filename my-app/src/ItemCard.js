@@ -25,15 +25,16 @@ const useStyles = makeStyles({
         borderRadius: 2, // Add this line to make the corners right angled
         transformStyle: 'preserve-3d',
         border: '1px solid black',
+
     },
     leftAlign: {
         textAlign: 'left',
     },
     chipRed: {
-        backgroundColor: '#db7070',
+        backgroundColor: '#ff3f10',
     },
     chipGreen: {
-        backgroundColor: '#54a04f',
+        backgroundColor: '#15d500',
     },
     head: {
         fontSize: '0.8rem',
@@ -61,16 +62,19 @@ const useStyles = makeStyles({
         marginTop: '10px', // Adjust this value as needed
     },
     chipTopRight: {
+        color: 'black',
+        fontSize: '.9rem',
         position: 'absolute',
-        top: '0px',
-        color: '#fff',
-        right: '0px',
-        fontSize: '.75rem',
+        top: '-5px',
+        right: '-5px',
+        zIndex: 1,
+
         borderTopLeftRadius: 0,
         borderBottomRightRadius: 0,
         borderTopRightRadius: 0,
+        boxShadow: ' 0 2px 5px 0 rgb(0 0 0 / 26%)',
+        border: '1px solid black',
         borderBottomLeftRadius: 2,
-
     },
     marketKey: {
         fontWeight: 'bold',
@@ -155,23 +159,55 @@ const marketKeyTitles = {
     totalDollars: 'Total Sold',
 };
 
-function ItemCard({ item }) {
+function ItemCard({ item, sortBy }) {
     const classes = useStyles();
     const [isFlipped, setIsFlipped] = useState(false);
 
     const handleFlip = () => {
         setIsFlipped(!isFlipped);
     };
+    let chipLabel;
+    function formatNumber(num) {
+        if (Math.abs(num) > 999999) {
+            return Math.sign(num)*((Math.abs(num)/1000000).toFixed(1)) + 'M';
+        } else if (Math.abs(num) > 999) {
+            return Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k';
+        } else {
+            return Math.sign(num)*Math.abs(num);
+        }
+    }
+
+    switch (sortBy) {
+        case 'changeValue':
+            chipLabel = `${item.market.changeValue < 0 ? '-' : '+'}$${formatNumber(Math.abs(Math.round(Number(item.market.changeValue))))}`;
+            break;
+        case 'deadstockSold':
+            chipLabel = `${formatNumber(item.market.deadstockSold)}`;
+            break;
+        case 'averageDeadstockPrice':
+            chipLabel = `$${formatNumber(item.market.averageDeadstockPrice)}`;
+            break;
+        case 'lastSale':
+            chipLabel = new Date(item.market.lastSaleDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            break;
+        case 'totalDollars':
+            chipLabel = `$${formatNumber(item.market.totalDollars)}`;
+            break;
+        default:
+            chipLabel = '';
+    }
+
 
     return (
         <ThemeProvider theme={theme}>
+            <div style={{ position: 'relative' }}>
+    <Chip
+        label={chipLabel}
+        className={`${classes.chipTopRight} ${sortBy === 'changeValue' ? (item.market.changeValue < 0 ? classes.chipRed : classes.chipGreen) : classes.chipLightGrey}`}
+    />
             <Card className={classes.card} onClick={handleFlip}>
                 <div className={`${classes.flipContainer} ${isFlipped ? classes.flipped : ''}`}>
                     <CardActionArea className={classes.front}>
-                        <Chip
-                            label={`${item.market.changeValue < 0 ? '-' : '+'}$${Math.abs(Math.round(Number(item.market.changeValue)))}`} 
-                            className={`${classes.chipTopRight} ${item.market.changeValue < 0 ? classes.chipRed : classes.chipGreen}`}
-                        />
                         <CardMedia
                             component="img"
                             alt={item.model || 'Item image'}
@@ -266,6 +302,7 @@ function ItemCard({ item }) {
                     </CardActionArea>
                 </div>
             </Card>
+            </div>
         </ThemeProvider>
     );
 }
