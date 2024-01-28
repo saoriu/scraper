@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
       transition: 'width 0.5s ease-in-out',
       overflow: 'hidden', // Add this line
       '&:hover': {
-        width: '200px', // Width on hover
+        width: '230px', // Width on hover
       },
       '&:hover $hiddenText': {
         opacity: 1,
@@ -214,7 +214,7 @@ function App() {
       <div className={`${classes.footer} footer`}>
         <img src="/logo.png" alt="Logo" className={classes.logo} />
         <a href='https://saoriuchida.com' className={classes.saori} target='_blank' rel='noopener noreferrer'>
-          <span className={classes.hiddenText}>Scrape Sight by Saori Uchida</span>
+          <span className={classes.hiddenText}>scrapesight™️ by Saori Uchida</span>
         </a>
       </div>
     </div>
