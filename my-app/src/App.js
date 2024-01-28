@@ -86,10 +86,10 @@ function App() {
       });
   }, []);
 
-  const sortItems = (items, sortBy = 'changeValue', sortDirection = 'desc') => {
+  const sortItems = (items, sortBy = 'changeValue') => {
     return [...items].sort((a, b) => {
       if (a.market[sortBy] < b.market[sortBy]) {
-        return sortDirection === 'asc' ? -1 : 1;
+        return sortDirection === 'desc' ? -1 : 1;
       }
       if (a.market[sortBy] > b.market[sortBy]) {
         return sortDirection === 'asc' ? 1 : -1;
@@ -130,7 +130,7 @@ function App() {
     if (sortBy) {
       handleSort();
     }
-  }, [sortDirection, sortBy]);
+  }, [sortDirection, sortBy, selectedBrand, searchQuery]);
   
   useEffect(() => {
     setLoading(true);
@@ -153,28 +153,47 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    setLoading(true);
+    const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
+    if (selectedBrand) {
+      const filteredItems = allItems.filter(item => item.brand === selectedBrand);
+      setItems(filteredItems);
+    } else {
+      setItems(allItems);
+    }
+    setLoading(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleSort();
+  }, [selectedBrand]);
+
   const handleBrandSelect = (brand) => {
     setLoading(true);
     setSelectedBrand(brand);
+    setSearchQuery(''); // Clear the search query
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
     const filteredItems = allItems.filter(item => item.brand === brand);
-    setItems(sortItems(filteredItems, sortBy)); // Pass sortBy to sortItems
+    setItems(filteredItems);
     setLoading(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleSort();
   };
 
   const handleViewAll = () => {
     setLoading(true);
     setSelectedBrand('');
+    setSearchQuery(''); // Clear the search query
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
-    setItems(sortItems(allItems, sortBy)); // Pass sortBy to sortItems
+    setItems(allItems); // Remove sortItems from here
     setLoading(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleSort(); // Add this line
   };
 
   const onSearch = (event) => {
     event.preventDefault();
     setLoading(true);
+    setSelectedBrand(''); // Clear the selected brand
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
     const filteredItems = allItems.filter(item => 
       item.model.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -213,7 +232,7 @@ function App() {
       )}
       <div className={`${classes.footer} footer`}>
         <img src="/logo.png" alt="Logo" className={classes.logo} />
-        <a href='https://saoriuchida.com' className={classes.saori} target='_blank' rel='noopener noreferrer'>
+        <a href='' className={classes.saori} target='_blank' rel='noopener noreferrer'>
           <span className={classes.hiddenText}>scrapesight™️ by Saori Uchida</span>
         </a>
       </div>
