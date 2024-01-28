@@ -10,7 +10,7 @@ exports.handler = async (event) => {
     for (let segment = 0; segment < totalSegments; segment++) {
         const params = {
             TableName: 'ScrapedData',
-            ProjectionExpression: 'secondaryTitle, model, media, market', // Only return these attributes
+            ProjectionExpression: 'secondaryTitle, brand, model, media, market', // Only return these attributes
             Segment: segment,
             TotalSegments: totalSegments,
         };

@@ -64,26 +64,14 @@ function App() {
         });
     }
   }, []);
-  
+
   const handleBrandSelect = (brand) => {
     setLoading(true);
-    setItems([]); // Clear existing items when a new brand is selected
-    const cachedBrandItems = sessionStorage.getItem(`brand-${brand}`);
-    if (cachedBrandItems) {
-      setItems(JSON.parse(cachedBrandItems));
-      setLoading(false);
-    } else {
-      axios.get(`https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/item?brand=${brand}`)
-        .then(response => {
-          setItems(response.data);
-          sessionStorage.setItem(`brand-${brand}`, JSON.stringify(response.data));
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Error fetching data: ', error);
-          setLoading(false);
-        });
-    }
+    const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
+    console.log(allItems); // Add this line
+    const filteredItems = allItems.filter(item => item.brand === brand);
+    setItems(filteredItems);
+    setLoading(false);
   };
 
   return (
