@@ -187,7 +187,7 @@ function ItemCard({ item, sortBy }) {
         case 'averageDeadstockPrice':
             chipLabel = `$${formatNumber(item.market.averageDeadstockPrice)}`;
             break;
-        case 'lastSale':
+        case 'lastSaleDate':
             chipLabel = new Date(item.market.lastSaleDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             break;
         case 'totalDollars':

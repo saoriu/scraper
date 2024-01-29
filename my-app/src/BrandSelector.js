@@ -191,7 +191,7 @@ function BrandSelector({ brands, onBrandSelect, onSort, flipSortDirection, sortD
                     <MenuItem value={'deadstockSold'}>Units Sold</MenuItem>
                     <MenuItem value={'totalDollars'}>Total Dollars</MenuItem>
                     <MenuItem value={'averageDeadstockPrice'}>Average Price</MenuItem>
-                    <MenuItem value={'lastSale'}>Last Sale Date</MenuItem>
+                    <MenuItem value={'lastSaleDate'}>Last Sale Date</MenuItem>
                 </Select>
                 <Button
                     variant="contained"

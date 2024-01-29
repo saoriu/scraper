@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
       transition: 'width 0.5s ease-in-out',
       overflow: 'hidden', // Add this line
       '&:hover': {
-        width: '230px', // Width on hover
+        width: '212px', // Width on hover
       },
       '&:hover $hiddenText': {
         opacity: 1,
@@ -107,10 +107,18 @@ function App() {
       allItems = allItems.filter(item => item.brand === selectedBrand);
     }
     let sortedItems;
-    if (sortDirection === 'desc') {
-      sortedItems = allItems.sort((a, b) => a.market[sortBy] - b.market[sortBy]);
+    if (sortBy === 'lastSaleDate') {
+      if (sortDirection === 'desc') {
+        sortedItems = allItems.sort((a, b) => new Date(b.market[sortBy]) - new Date(a.market[sortBy]));
+      } else {
+        sortedItems = allItems.sort((a, b) => new Date(a.market[sortBy]) - new Date(b.market[sortBy]));
+      }
     } else {
-      sortedItems = allItems.sort((a, b) => b.market[sortBy] - a.market[sortBy]);
+      if (sortDirection === 'desc') {
+        sortedItems = allItems.sort((a, b) => a.market[sortBy] - b.market[sortBy]);
+      } else {
+        sortedItems = allItems.sort((a, b) => b.market[sortBy] - a.market[sortBy]);
+      }
     }
     setItems(sortedItems);
     window.scrollTo({ top: 0, behavior: 'smooth' });
