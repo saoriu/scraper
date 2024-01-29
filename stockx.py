@@ -89,7 +89,7 @@ async def scrape_product(url: str) -> Dict:
     }
     return extracted_product
 
-async def scrape_search(url: str, max_pages: int = 20) -> List[str]:
+async def scrape_search(url: str, max_pages: int = 10) -> List[str]:
     """Scrape StockX search"""
     log.info("scraping search {}", url)
     first_page = await SCRAPFLY.async_scrape(ScrapeConfig(url, **BASE_CONFIG))

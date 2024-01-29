@@ -15,11 +15,12 @@ table = dynamodb.Table(table_name)
 async def run(event, context):
     # enable scrapfly cache for basic use
     stockx.BASE_CONFIG["cache"] = True
+    # Scrape the sneakers page
 
-    # Scrape the apparel page
-    url_keys_apparel = await stockx.scrape_search("https://stockx.com/search/apparel/", max_pages=20)    
+    #scrape /search/accessories?s=bags
+    url_keys_accessories = await stockx.scrape_search("https://stockx.com/accessories/shoulder-bag", max_pages=5)
 
-    url_keys = url_keys_apparel
+    url_keys = url_keys_accessories
 
     
     for key in url_keys:

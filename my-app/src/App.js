@@ -86,10 +86,10 @@ function App() {
       });
   }, []);
 
-  const sortItems = (items, sortBy = 'changeValue') => {
+  const sortItems = (items, sortBy = 'changeValue', sortDirection = 'desc') => { 
     return [...items].sort((a, b) => {
       if (a.market[sortBy] < b.market[sortBy]) {
-        return sortDirection === 'desc' ? -1 : 1;
+        return sortDirection === 'asc' ? -1 : 1;
       }
       if (a.market[sortBy] > b.market[sortBy]) {
         return sortDirection === 'asc' ? 1 : -1;
@@ -99,15 +99,13 @@ function App() {
   };
 
   const handleSort = () => {
-    setLoading(true);
     let allItems = JSON.parse(sessionStorage.getItem('items')) || [];
     if (searchQuery) {
       allItems = allItems.filter(item => 
         item.model.toLowerCase().includes(searchQuery.toLowerCase()) || 
         item.secondaryTitle.toLowerCase().includes(searchQuery.toLowerCase())
       );
-    }
-    if (selectedBrand) {
+    } else if (selectedBrand) { // Only consider selectedBrand if there's no search query
       allItems = allItems.filter(item => item.brand === selectedBrand);
     }
     let sortedItems;
@@ -117,10 +115,9 @@ function App() {
       sortedItems = allItems.sort((a, b) => b.market[sortBy] - a.market[sortBy]);
     }
     setItems(sortedItems);
-    setLoading(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setLoading(false);
   };
-  
   const flipSortDirection = () => {
     setSortDirection(prevDirection => prevDirection === 'asc' ? 'desc' : 'asc');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -137,7 +134,6 @@ function App() {
     const cachedItems = sessionStorage.getItem('items');
     if (cachedItems) {
       setItems(sortItems(JSON.parse(cachedItems)));
-      setLoading(false);
     } else {
       axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/item')
         .then(response => {
@@ -148,7 +144,6 @@ function App() {
         })
         .catch(error => {
           console.error('Error fetching items: ', error);
-          setLoading(false);
         });
     }
   }, []);
@@ -162,37 +157,31 @@ function App() {
     } else {
       setItems(allItems);
     }
-    setLoading(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     handleSort();
   }, [selectedBrand]);
 
   const handleBrandSelect = (brand) => {
-    setLoading(true);
     setSelectedBrand(brand);
     setSearchQuery(''); // Clear the search query
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
     const filteredItems = allItems.filter(item => item.brand === brand);
     setItems(filteredItems);
-    setLoading(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     handleSort();
   };
 
   const handleViewAll = () => {
-    setLoading(true);
     setSelectedBrand('');
     setSearchQuery(''); // Clear the search query
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
     setItems(allItems); // Remove sortItems from here
-    setLoading(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     handleSort(); // Add this line
   };
 
   const onSearch = (event) => {
     event.preventDefault();
-    setLoading(true);
     setSelectedBrand(''); // Clear the selected brand
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
     const filteredItems = allItems.filter(item => 
@@ -201,9 +190,9 @@ function App() {
       item.brand.toLowerCase().includes(searchQuery.toLowerCase()) // Include brand in search criteria
     );
     setItems(sortItems(filteredItems, sortBy)); // Pass sortBy to sortItems
-    setLoading(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  
 
   return (
     <div className='App'>
@@ -233,7 +222,7 @@ function App() {
       <div className={`${classes.footer} footer`}>
         <img src="/logo.png" alt="Logo" className={classes.logo} />
         <a href='' className={classes.saori} target='_blank' rel='noopener noreferrer'>
-          <span className={classes.hiddenText}>scrapesight™️ by Saori Uchida</span>
+          <span className={classes.hiddenText}>scrapesight™️ by S. Uchida</span>
         </a>
       </div>
     </div>
