@@ -65,9 +65,9 @@ function App() {
   const [brands, setBrands] = useState([]);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadingBrands, setLoadingBrands] = useState(true);
   const [selectedBrand, setSelectedBrand] = useState(''); // Add this line
   const [sortDirection, setSortDirection] = useState('asc');
+  const [originalItems, setOriginalItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
 
@@ -78,11 +78,9 @@ function App() {
       .then(response => {
         const sortedBrands = response.data.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())); // Sort the brands case-insensitively
         setBrands(sortedBrands);
-        setLoadingBrands(false);
       })
       .catch(error => {
         console.error('Error fetching brands: ', error);
-        setLoadingBrands(false);
       });
   }, []);
 
@@ -99,7 +97,7 @@ function App() {
   };
 
   const handleSort = () => {
-    let allItems = JSON.parse(sessionStorage.getItem('items')) || [];
+    let allItems = [...originalItems]; // Copy the original items
     if (searchQuery) {
       allItems = allItems.filter(item => 
         item.model.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -131,22 +129,16 @@ function App() {
   
   useEffect(() => {
     setLoading(true);
-    const cachedItems = sessionStorage.getItem('items');
-    if (cachedItems) {
-      setItems(sortItems(JSON.parse(cachedItems)));
-      setLoading(false);
-    } else {
-      axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/item')
-        .then(response => {
-          const sortedItems = sortItems(response.data);
-          setItems(sortedItems);
-          sessionStorage.setItem('items', JSON.stringify(sortedItems));
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Error fetching items: ', error);
-        });
-    }
+    axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/item')
+      .then(response => {
+        const sortedItems = sortItems(response.data);
+        setOriginalItems(sortedItems); // Store the items in originalItems
+        setItems(sortedItems); // Also store the items in items for display
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching items: ', error);
+      });
   }, []);
 
   useEffect(() => {
@@ -164,8 +156,7 @@ function App() {
   const handleBrandSelect = (brand) => {
     setSelectedBrand(brand);
     setSearchQuery(''); // Clear the search query
-    const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
-    const filteredItems = allItems.filter(item => item.brand === brand);
+    const filteredItems = originalItems.filter(item => item.brand === brand);
     setItems(filteredItems);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     handleSort();
@@ -174,8 +165,7 @@ function App() {
   const handleViewAll = () => {
     setSelectedBrand('');
     setSearchQuery(''); // Clear the search query
-    const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
-    setItems(allItems); // Remove sortItems from here
+    setItems(originalItems); // Use originalItems instead of sessionStorage
     window.scrollTo({ top: 0, behavior: 'smooth' });
     handleSort(); // Add this line
   };
@@ -183,8 +173,7 @@ function App() {
   const onSearch = (event) => {
     event.preventDefault();
     setSelectedBrand(''); // Clear the selected brand
-    const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
-    const filteredItems = allItems.filter(item => 
+    const filteredItems = originalItems.filter(item => 
       item.model.toLowerCase().includes(searchQuery.toLowerCase()) || 
       item.secondaryTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.brand.toLowerCase().includes(searchQuery.toLowerCase()) // Include brand in search criteria
@@ -196,7 +185,7 @@ function App() {
 
   return (
     <div className='App'>
-            {loadingBrands 
+            {loading 
           ? <div className={classes.loader}><GridLoader size={30} /></div> 
           : (
       <div className='content'>
