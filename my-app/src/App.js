@@ -116,8 +116,8 @@ function App() {
     }
     setItems(sortedItems);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setLoading(false);
   };
+  
   const flipSortDirection = () => {
     setSortDirection(prevDirection => prevDirection === 'asc' ? 'desc' : 'asc');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -134,6 +134,7 @@ function App() {
     const cachedItems = sessionStorage.getItem('items');
     if (cachedItems) {
       setItems(sortItems(JSON.parse(cachedItems)));
+      setLoading(false);
     } else {
       axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/item')
         .then(response => {
@@ -149,7 +150,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
     if (selectedBrand) {
       const filteredItems = allItems.filter(item => item.brand === selectedBrand);
@@ -196,7 +196,6 @@ function App() {
 
   return (
     <div className='App'>
-
             {loadingBrands 
           ? <div className={classes.loader}><GridLoader size={30} /></div> 
           : (
@@ -222,7 +221,7 @@ function App() {
       <div className={`${classes.footer} footer`}>
         <img src="/logo.png" alt="Logo" className={classes.logo} />
         <a href='' className={classes.saori} target='_blank' rel='noopener noreferrer'>
-          <span className={classes.hiddenText}>scrapesight™️ by S. Uchida</span>
+          <span className={classes.hiddenText}>scrapesight™️ by Saori Uchida</span>
         </a>
       </div>
     </div>
