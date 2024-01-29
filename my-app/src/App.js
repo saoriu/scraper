@@ -210,7 +210,7 @@ function App() {
       <div className={`${classes.footer} footer`}>
         <img src="/logo.png" alt="Logo" className={classes.logo} />
         <a href='' className={classes.saori} target='_blank' rel='noopener noreferrer'>
-          <span className={classes.hiddenText}>scrapesight™️ by Saori Uchida</span>
+          <span className={classes.hiddenText}>scrapesight™️ by S. Uchida</span>
         </a>
       </div>
     </div>
