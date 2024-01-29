@@ -162,10 +162,23 @@ const marketKeyTitles = {
 function ItemCard({ item, sortBy }) {
     const classes = useStyles();
     const [isFlipped, setIsFlipped] = useState(false);
+    let flipTimeout = null;
 
-    const handleFlip = () => {
-        setIsFlipped(!isFlipped);
+    const handleMouseEnter = () => {
+        flipTimeout = setTimeout(() => {
+            setIsFlipped(true);
+        }, 500); // 1 second delay
     };
+
+    const handleMouseLeave = () => {
+        clearTimeout(flipTimeout); // clear the timeout if the mouse leaves before the card flips
+        flipTimeout = setTimeout(() => {
+            setIsFlipped(false);
+        }, 500); // 1 second delay
+    };
+
+
+
     let chipLabel;
     function formatNumber(num) {
         if (Math.abs(num) > 999999) {
@@ -205,9 +218,9 @@ function ItemCard({ item, sortBy }) {
         label={chipLabel}
         className={`${classes.chipTopRight} ${sortBy === 'changeValue' ? (item.market.changeValue < 0 ? classes.chipRed : classes.chipGreen) : classes.chipLightGrey}`}
     />
-            <Card className={classes.card} onClick={handleFlip}>
-                <div className={`${classes.flipContainer} ${isFlipped ? classes.flipped : ''}`}>
-                    <CardActionArea className={classes.front}>
+<Card className={classes.card} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                    <div className={`${classes.flipContainer} ${isFlipped ? classes.flipped : ''}`}>
+                        <CardActionArea className={classes.front}>
                         <CardMedia
                             component="img"
                             alt={item.model || 'Item image'}

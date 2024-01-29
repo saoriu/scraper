@@ -74,13 +74,27 @@ function App() {
   
 
   useEffect(() => {
-    axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/brands')
-      .then(response => {
-        const sortedBrands = response.data.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())); // Sort the brands case-insensitively
+    setLoading(true);
+
+    const fetchBrands = axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/brands');
+    const fetchItems = axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/item');
+
+    Promise.all([fetchBrands, fetchItems])
+      .then(responseArray => {
+        const brandsResponse = responseArray[0];
+        const itemsResponse = responseArray[1];
+
+        const sortedBrands = brandsResponse.data.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
         setBrands(sortedBrands);
+
+        const sortedItems = sortItems(itemsResponse.data);
+        setOriginalItems(sortedItems);
+        setItems(sortedItems);
+
+        setLoading(false);
       })
       .catch(error => {
-        console.error('Error fetching brands: ', error);
+        console.error('Error fetching data: ', error);
       });
   }, []);
 
@@ -134,20 +148,6 @@ function App() {
       handleSort();
     }
   }, [sortDirection, sortBy, selectedBrand, searchQuery]);
-  
-  useEffect(() => {
-    setLoading(true);
-    axios.get('https://8kserg4k6e.execute-api.us-east-2.amazonaws.com/prod/item')
-      .then(response => {
-        const sortedItems = sortItems(response.data);
-        setOriginalItems(sortedItems); // Store the items in originalItems
-        setItems(sortedItems); // Also store the items in items for display
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching items: ', error);
-      });
-  }, []);
 
   useEffect(() => {
     const allItems = JSON.parse(sessionStorage.getItem('items')) || [];
